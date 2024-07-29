@@ -49,10 +49,9 @@ library(scales)
 
 ## Obtendo os dados
 
-Para iniciarmos o nosso processo de exploração dos dados, vamos inicialmente passar o link do repositório com as duas bases que utilizaremos em nosso projeto:
+Para iniciarmos o nosso processo de exploração dos dados, vamos inicialmente passar o caminho das duas bases que utilizaremos em nosso projeto:
 
 ```{r}
-# mudar link para o repositório do R quando criado
 url_vendas = "dados/zoop_vendas.csv"
 url_clientes = "dados/zoop_clientes.csv"
 ```
@@ -62,15 +61,13 @@ Após esta etapa, vamos criar 2 tabelas com os dados dos clientes e das vendas d
 Para a tabela de vendas vamos ler os primeiros dados, observando as colunas e os registros utilizando a função `head()`.
 
 ```{r}
-vendas <- read_csv(url_vendas, show_col_types = FALSE)
-head(vendas)
+
 ```
 
 Já para a tabela de clientes vamos usar o `glimpse()` que mostra um resumo da estrutura dos dados (colunas e seus tipos)
 
 ```{r}
-clientes <- read_csv(url_clientes, show_col_types = FALSE)
-glimpse(clientes)
+
 ```
 
 Já estamos com as bases que vamos utilizar. Mas quais são as perguntas levantadas para respondermos com a análise destes dados?
@@ -99,7 +96,7 @@ Agora, vamos fazer uma breve exploração dos dados para compreender um pouco so
 Começando pela base de vendas, vamos entender os dados que possuímos:
 
 ```{r}
-vendas
+
 ```
 
 Como podemos observar, o `tibble` gerado foi bem assertivo, acertando os dados numéricos, categóricos e de data. Temos mais de 6000 registros de venda e as características das vendas como hora e dia da compra, categoria do produto, preço, método de pagamento entre outros
@@ -107,16 +104,13 @@ Como podemos observar, o `tibble` gerado foi bem assertivo, acertando os dados n
 Porém, como vamos utilizar esses dados para a construção de visuais, uma boa prática é transfomar dados categóricos que se repetem (categoria e método de pagamento) em **factor**. Faremos essa alteração da seguinte forma:
 
 ```{r}
-vendas <- vendas %>% 
-  mutate_if(is.character, as.factor)
-vendas
+
 ```
 
 Legal! Já ajustamos nosso dados categóricos. Agora, que tal criarmos uma variável que já traga o valor total da compra?
 
 ```{r}
-vendas <- vendas %>% 
-  mutate(total = preco_unitario * quantidade + frete)
+
 ```
 
 ### Tabela dos clientes
@@ -124,15 +118,13 @@ vendas <- vendas %>%
 Vamos agora para a base de clientes observar também os dados que possuímos:
 
 ```{r}
-clientes
+
 ```
 
 Aqui, vamos fazer apenas aquele mesmo processo do factor. Podemos utilizar o mesmo código modificando apenas para a base clientes
 
 ```{r}
-clientes <- clientes %>% 
-  mutate_if(is.character, as.factor)
-head(clientes)
+
 ```
 
 Já exploramos um pouco das duas bases do projeto e ajustamos os dados para facilitar o nosso processo de criação dos gráfico. Vamos começar a colocar a mão na massa e construir o nosso primeiro visual?
@@ -142,7 +134,7 @@ Já exploramos um pouco das duas bases do projeto e ajustamos os dados para faci
 O pacote **ggplot2** trabalha com a criação de visualização de dados em camadas. Ou seja, para construir um gráfico, nós precisamos montá-los aos poucos adicionando os recursos camada por camada. Ao todo, o ggplot2 possui uma série de elementos gramaticais que constituem as camadas e recursos de um visual:
 
 | Elemento    | Descrição                                                       |
-|----------------|--------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | data        | Os dados que serão utilizados para a construção do visual       |
 | aesthetics  | A dimensão visual dos dados (coordenadas e elementos estéticos) |
 | geometries  | Os elementos visuais utilizados a partir dos dados              |
@@ -164,7 +156,7 @@ Primeiro, vamos utilizar a base de vendas e construir um visual que apresente o 
 Esta é área que utilizaremos para o visual e seus elementos. É bastante comum chamarmos os dados que vamos utilizar nesta camada.
 
 ```{r}
-ggplot(vendas)
+
 ```
 
 #### 2. Escolher a estética do gráfico (dimensão visual)
@@ -172,7 +164,7 @@ ggplot(vendas)
 Aqui definimos as coordenadas e outros elementos estéticos do visual, baseados nos valores da base de dados.
 
 ```{r}
-ggplot(vendas, aes(x = categoria, y = total))
+
 ```
 
 #### 3. Definir o elemento geométrico (tipo do visual)
@@ -180,8 +172,7 @@ ggplot(vendas, aes(x = categoria, y = total))
 Nesta etapa, escolhemos o tipo de gráfico que queremos construir e também quais elementos que gostaríamos de adicionar na área da figura.
 
 ```{r}
-ggplot(vendas, aes(x = categoria, y = total)) +
-  geom_col()
+
 ```
 
 Conseguimos observar acima, a construção de um exemplo de visual (gráfico de colunas) utilizando os 3 elementos básicos da construção de um gráfico com ggplot2. Logo abaixo, temos um exemplo de sintaxe que pode ser aplicado a uma série de visuais passando os dados, suas coordenadas e tipo de visual
@@ -203,14 +194,13 @@ Vamos começar analisando os dados dos clientes. Aqui, vamos optar por uma anál
 A nossa base de dados de clientes é definida pelo ID da compra. Ou seja, 1 ou mais clientes podem realizar mais de uma compra. Então, para verificar isso, vamos contar a quantidade clientes únicos que possuímos.
 
 ```{r}
-clientes %>% count(ID_cliente, sort = T)
+
 ```
 
 Foi possível notar que na verdade temos 4453 clientes únicos em nossa base. Portanto, vamos criar uma nova tabela que salva os dados de cada um deles unicamente, para que possamos utilizar em nossos visuais.
 
 ```{r}
-clientes_unicos <- clientes %>% distinct(ID_cliente, .keep_all = T)
-clientes_unicos
+
 ```
 
 Pronto! Agora temos a tabela com os clientes únicos e podemos partir para responder os questionamentos pertinentes ao perfil dos clientes. Vamos começar pelo seguinte caso:
@@ -220,8 +210,7 @@ Pronto! Agora temos a tabela com os clientes únicos e podemos partir para respo
 Para respondermos essa pergunta, vamos recorrer a um visual muito utilizado para distribuição de dados de uma única variável: **Histograma**
 
 ```{r}
-ggplot(clientes_unicos, aes(idade)) +
-  geom_histogram(binwidth = 3)
+
 ```
 
 Conseguimos notar, por exemplo, que a escolha dos intervalos (bins) ou largura do intervalo (binwidth) pode influenciar na observação dos dados. Por isso é muito importante ter isso em mente ao construir o gráfico.
@@ -231,8 +220,7 @@ Podemos observar que grande parte da clientela está disposta entre 30 a 50 anos
 Podemos estilizar o Histograma também para representar, por exemplo, os resultados com outras cores. Para isso temos 2 argumentos que podemos utilizar no elemento geométrico: `color` e `fill`
 
 ```{r}
-ggplot(clientes_unicos, aes(idade)) +
-  geom_histogram(binwidth = 3, fill = "steelblue", color = "white")
+
 ```
 
 Ficou bem interessante o nosso visual, certo? Sinta-se livre para interpretar e colocar seus achados neste visual em relação ao perfil dos clientes.
@@ -264,9 +252,7 @@ Visto a estrutura de um boxplot, vamos partir para investigação de mais uma ca
 Para respondermos essa pergunta, vamos construir um **Boxplot**
 
 ```{r}
-ggplot(clientes_unicos) +
-  geom_boxplot(aes(y = regiao, x = idade))
-  
+
 ```
 
 Conseguimos gerar alguns insights aqui neste visual. Podemos, por exemplo, notar uma distribuição de público mais jovem na Região Centro-Oeste.
@@ -274,15 +260,13 @@ Conseguimos gerar alguns insights aqui neste visual. Podemos, por exemplo, notar
 Uma outra curiosidade é a inserção de uma variável para segregação/divisão de dados, o argumento `fill` , desta vez dentro da camada `aes`**.**
 
 ```{r}
-ggplot(clientes_unicos) +
-  geom_boxplot(aes(y = regiao, x = idade, fill = regiao))
+
 ```
 
 Não observamos nenhuma diferença a não ser na cor de cada boxplot e a legenda ao lado. Isto porque utilizamos a mesma variável para o eixo y e o fill. Para auxiliar na resposta ao questionamento, que tal adicionarmos no fill a variável `sexo_biologico?`
 
 ```{r}
-ggplot(clientes_unicos) +
-  geom_boxplot(aes(y = regiao, x = idade, fill = sexo_biologico))
+
 ```
 
 Bem diferente, não é mesmo? Podemos ter alguns insights interessantes aqui. Por exemplo, lembra que citamos o Centro-Oeste com uma distribuição de público mais jovem? Então, com essa divisão pelo sexo ficou mais evidente a influência do resultado pela distribuição do público do sexo masculino na região.
@@ -300,18 +284,13 @@ Para responder essa pergunta podemos construir uma série de visuais. Vamos opta
 A diferença é que precisaremos filtrar os dados trazendo apenas os clientes que participam do programa de cashback. E, além disso, representar os dados como **proporção** (percentual). Mas vamos começar contando quantos clientes usam esse serviço
 
 ```{r }
-clientes_unicos %>% filter(cashback == "Sim") %>% 
-  ggplot(aes(x=regiao)) + 
-  geom_bar()
+
 ```
 
 Já trouxemos em valores absolutos a quantidade de clientes que usam o serviço de cashback. Agora vamos ajustar o gráfico para trazer em dados percentuais. Para isso utilizaremos na estética do `geom_bar` um cálculo estatístico que conta cada quantidade de clientes e divide pelo total. Usaremos a palavra reservada `count`para nos auxiliar.
 
 ```{r}
-clientes_unicos %>% filter(cashback == "Sim") %>% 
-  ggplot(aes(x=regiao)) + 
-  geom_bar(aes(y = after_stat(100 * count/sum(count)))) +
-  labs(y = "Porcentagem")
+
 ```
 
 Agora conseguimos representar os dados em escala percentual utilizando o `after_stat()`. Foi possível notar que as 3 principais regiões em nº de clientes são as regiões Sudeste, Nordeste e Sul. E, que tanto o Centro-Oeste, quanto o Norte possuem menos de 10% de representatividade nacional no programa de cashback.
@@ -333,10 +312,10 @@ Vamos fazer uma pequena modificação do nosso visual, alterando a ordem das cat
 > Obs: Por padrão, a função `reorder()` ordena pela mediana dos dados.
 
 ```{r}
-g1 <- ggplot(vendas, aes(x = reorder(categoria, -total, FUN = sum), y = total)) + 
+g <- ggplot(vendas, aes(x = categoria, y = total)) +
   geom_col()
 
-g1
+g
 ```
 
 Após ordenar os dados, o gráfico ficou bem mais interessante, dando essa sensação de progressão. As vendas com Tecnologia e Eletrodomésticos é bem maior que as outras categorias.
@@ -344,9 +323,8 @@ Após ordenar os dados, o gráfico ficou bem mais interessante, dando essa sensa
 Pensando em adicionar os valores por fora das colunas e tirando aquele espaço abaixo das barras dando uma sensação ques estão "flutuando", vamos ajustar os limites do gráfico. Para isso utilizaremos as funções de escala do visual, no nosso caso, `scale_y_continuous()`
 
 ```{r}
-g1 <- g1 +
-  scale_y_continuous(expand = c(0,0), limits = c(0, 5.2e6))
-g1
+g <- g + ...
+g
 ```
 
 Os nomes das categorias são relativamente curtos, mas e se adicionarmos mais categorias? E se os nomes fossem maiores?
@@ -354,8 +332,8 @@ Os nomes das categorias são relativamente curtos, mas e se adicionarmos mais ca
 Para evitar essas situações podemos modificar a orientação do gráfico de coluna para barra. Uma forma simples de fazer isso em R, sem precisar mudar os valores de x e y, é por meio da função `coord_flip()`
 
 ```{r}
-g1 <- g1 + coord_flip()
-g1
+g <- g + ...
+g
 ```
 
 Bem melhor para ler o nome das categorias, não é mesmo? A ordenação permaneceu e um ponto de atenção está em perceber que as alterações posteriores à função são invertidas, quando mexer em x as alterações serão no eixo vertical, e em y serão no eixo horizontal.
@@ -369,15 +347,13 @@ Continuando o nosso processo de construção de visuais, vamos explorar agora gr
 Lembra que nossos dados são por compra e que a representação da data é diária? Então, vamos precisar ler de alguma forma os meses de cada compra e agregar esse dado por mês. Vamos começar então gerando a coluna `mes` que extrai esses dados
 
 ```{r}
-vendas <- vendas %>% 
-  mutate(mes = format(data, "%m"))
+
 ```
 
 Com a coluna dos meses criada, vamos construir um gráfico adequado para dados temporais com um número razoável de períodos: **Gráfico de Linha**
 
 ```{r}
-ggplot(vendas, aes(x = mes, y = total)) +
-  geom_line()
+
 ```
 
 Opa! Tem algo estrando no nosso gráfico. Isso porque ele está tentando ligar os pontos de todas as vendas em cada mês gerando diferentes linhas verticais que, é bem verdade, não nos informa nada!
@@ -385,11 +361,7 @@ Opa! Tem algo estrando no nosso gráfico. Isso porque ele está tentando ligar o
 Precisamos agrupar as vendas mês a mês, somando os valores de cada mês.
 
 ```{r}
-vendas_por_mes <- vendas %>% 
-  group_by(mes) %>% 
-  summarise(vendas_por_mes = sum(total))
 
-vendas_por_mes
 ```
 
 Agora sim! Com os dados dos meses agrupados vamo partir para nosso gráfico de linha. Para que possamos ligar os pontos, levando em conta que a variável x é temporal e/ou categórica, precisamos adicionar o código `group=1` em aes, para que entenda que todos os dados pertencem ao mesmo grupo.
@@ -397,9 +369,7 @@ Agora sim! Com os dados dos meses agrupados vamo partir para nosso gráfico de l
 Outro ponto de atenção também está nos ajustes do eixo y, evitando más interpretações do dado. É importante partir do 0!
 
 ```{r}
-ggplot(vendas_por_mes, aes(x = mes, y = vendas_por_mes, group = 1)) +
-  geom_line() +
-  ylim(0,2e6)
+
 ```
 
 Nosso gráfico finalmente saiu do papel! Podemos notar comportamentos interessantes como, por exemplo, um salto de vendas no último tri.
@@ -407,9 +377,7 @@ Nosso gráfico finalmente saiu do papel! Podemos notar comportamentos interessan
 O gráfico está bem simples. Que tal a gente modificar um pouco a nossa linha? Adicionar um cor, ajustar tamanho, etc.
 
 ```{r}
-ggplot(vendas_por_mes, aes(x = mes, y = vendas_por_mes, group=1)) +
-  geom_line(linewidth = 2, color = "steelblue", alpha = 0.5) +
-  ylim(0,2e6)
+
 ```
 
 Parece interessante! Mas que tal a gente dar um foco nos pontos desse gráfico. Para isso vamos precisar adicionar um novo `geom` aque. Vamos aprender como fazer?
@@ -425,10 +393,7 @@ Para isso, basta a gente adicionar um `geom_point` junto ao nosso visual que con
 Vamos adicionar alguns recursos visuais em nosso `geom_point` como tamanho, cor, forma, etc.
 
 ```{r}
-ggplot(vendas_por_mes, aes(x = mes, y = vendas_por_mes, group=1)) +
-  geom_line(linewidth = 2, color = "steelblue", alpha = 0.2) +
-  geom_point(size = 4, color = "steelblue", shape = "diamond") +
-  ylim(0,2e6)
+
 ```
 
 Legal! Nosso visual está ficando muito bom. Vamos mexer mais nele mais para frente, quando estivermos na etapa de personalização dos visuais.
@@ -444,24 +409,19 @@ Como você pode notar, temos 3 variáveis a considerar aqui: o tempo (em trimest
 Podemos começar tratando a variável temporal. Como não temos os dados do trimestre, vamos criar uma nova coluna com esse dado, utilizando o pacote `lubridate` para extrair os trimestres pela data da compra e já transformando para factor para facilitar na hora de construir o gráfico.
 
 ```{r}
-vendas <- vendas %>% 
-  mutate(trimestre = as.factor(quarter(data)))
+
 ```
 
 Após a criação da coluna, vamos agrupar os dados pelo trimestre e método de pagamento, somando as vendas.
 
 ```{r message=FALSE}
-vendas_por_tri <- vendas %>% 
-  group_by(trimestre, metodo_pagamento) %>% 
-  summarize(total_tri = sum(total))
-vendas_por_tri
+
 ```
 
 Agora, vamos construir o gráfico para representar a combinação dessas informações. Para responder o nosso questionamento podemos utilizar um **Gráfico de Colunas Empilhadas ou Agrupadas**. Vamos ver a diferença entre elas? Para segregar os dados pelo método de pagamento vamos recorrer ao elemento `fill` do aes.
 
 ```{r}
-ggplot(vendas_por_tri, aes(trimestre, total_tri, fill = metodo_pagamento)) +
-  geom_col(position = "dodge")
+
 ```
 
 Conseguimos notar a diferença entre colunas empilhadas e agrupadas:
@@ -475,9 +435,7 @@ Criamos o nosso visual, mas podemos fazer algumas estilizações que melhore a p
 Por isso, podemos fazer uso das paletas de cores no R para, por exemplo, demonstrar que os dados tem certa relação. Vamos então, primeiro, usar uma paleta pré-definida a `Blues` chamando-a por meio do `scale_fill_brewer()` .
 
 ```{r}
-ggplot(vendas_por_tri, aes(trimestre, total_tri, fill = metodo_pagamento)) +
-  geom_col(position = "dodge") +
-  scale_fill_brewer(palette = "Blues")
+
 ```
 
 Ficou bem melhor, né? Agora os dados dão uma sensação de pertencimento ao mesmo grupo. Mas, nós podemos também definir as cores do nosso visual manualmente. Essa 1ª cor azul por exemplo está muito clara para o fundo do gráfico. Vamos criar um vetor com as cores que desejamos:
@@ -489,9 +447,7 @@ cores <- c("lightskyblue1","steelblue","dodgerblue4")
 Depois de definir o vetor das cores vamos mudar a função da definição de cores para `scale_fill_manual()` .
 
 ```{r}
-ggplot(vendas_por_tri, aes(trimestre, total_tri, fill = metodo_pagamento)) +
-  geom_col(position = "dodge") +
-  scale_fill_manual(values = cores)
+
 ```
 
 Deu outra cara para o nosso visual! Temos um gráfico muito bem feito e que ilustra a resposta àquela pergunta com mais propriedade. Por exemplo, tivemos um aumento das vendas por PIX ao longo dos trimestres, embora apenas no 1º Tri eles foram em maioria em relação as compras por Cartão de Crédito.
@@ -543,7 +499,7 @@ grafico_vendas_mes <-
 Vamos começar explorando os temas básicos pré-definidos do ggplot2: `theme_bw()` , `theme_classic()`, `theme_minimal()`, entre outros
 
 ```{r}
-grafico_vendas_mes + theme_minimal()
+grafico_vendas_mes + ...
 ```
 
 Esses temas são largamente utilizados para diferentes situações. O `theme_minimal()` parece interessante para o que queremos.
@@ -576,9 +532,7 @@ Vamos continuar a estilização de nosso gráfico de vendas por mês. Pensando n
 ```{r}
 grafico_vendas_mes <- grafico_vendas_mes + 
   tema +
-  labs(title = "Vendas por mês da Zoop (2023)",
-       x = "Mês",
-       y = "Total de Vendas (R$)")
+  ...
 
 grafico_vendas_mes
 ```
@@ -598,10 +552,8 @@ Para os meses, utilizaremos o `scale_x_discrete()` e para os valores de venda, o
 
 ```{r message=FALSE}
 grafico_vendas_mes <- grafico_vendas_mes +
-  scale_x_discrete(labels = meses) +
-  scale_y_continuous(
-    labels = number_format(prefix = "R$ ",
-                           scale_cut = cut_short_scale()))
+  ...
+
 grafico_vendas_mes
 ```
 
@@ -627,7 +579,6 @@ Vamos ver como ficou nosso gráfico com esses pequenos ajustes?
 
 ```{r}
 grafico_vendas_categoria
-  
 ```
 
 Ele já está bem interessante, porém podemos fazer alguns ajustes. Como possuímos um gráfico de colunas com apenas 6 colunas, é mais interessante trazermos os valores para junto das barras tirando a necessidade de termos os valores das escalas no eixo X.
@@ -636,10 +587,7 @@ Faremos isso utilizando o `geom_label()` . Para conseguirmos agregar os valores 
 
 ```{r}
 grafico_vendas_categoria <- grafico_vendas_categoria +
-  geom_label(aes(label = number(after_stat(y),
-                                prefix = "R$ ",
-                                scale_cut = cut_si(""))),  
-            stat = 'summary', fun = "sum", hjust=-0.05)
+  ...
 
 grafico_vendas_categoria
 ```
@@ -710,17 +658,7 @@ Depois de todos os ajustes que realizamos, vamos agora observar como criar anota
 
 ```{r}
 grafico_vendas_pag <- grafico_vendas_pag +
-  annotate("text",
-            x = 1 ,
-            y = 1.5e6 ,
-            label = "As vendas por PIX superaram\nas de crédito apenas no 1º Tri",
-            vjust = 1, size = 3) +
-  annotate("curve",
-            x = 1,
-            y = 1.25e6,
-            xend = 1.1,
-            yend = 400e3,
-            arrow = arrow(length = unit(2, "mm")))
+  ...
   
 grafico_vendas_pag
 ```
@@ -781,12 +719,7 @@ grafico_vendas_pag
 Com as interpretações dos visuais que construímos ao longo do projeto, vamos partir para última etapa que é a de exportação dos visuais. Vamos utilizar a função `ggsave()` para salvá-los, passando os mesmos parâmetros de tamanho e qualidade para manter o padrão dos visuais.
 
 ```{r}
-ggsave("imagens/grafico_vendas_mes.png", grafico_vendas_mes, 
-       height = 5, width = 7, units="in", dpi=300)
-ggsave("imagens/grafico_vendas_categoria.png", grafico_vendas_categoria, 
-       height = 5, width = 7, units="in", dpi=300)
-ggsave("imagens/grafico_vendas_pag.png", grafico_vendas_pag, 
-       height = 5, width = 7, units="in", dpi=300)
+
 ```
 
 Agora é a sua vez! Que tal baixar os gráficos e gerar um relatório trazendo alguns insights e explicando os resultados?
