@@ -61,7 +61,8 @@ Após esta etapa, vamos criar 2 tabelas com os dados dos clientes e das vendas d
 Para a tabela de vendas vamos ler os primeiros dados, observando as colunas e os registros utilizando a função `head()`.
 
 ```{r}
-
+vendas <- read_csv(url_vendas, show_col_types = FALSE)
+vendas
 ```
 
 Já para a tabela de clientes vamos usar o `glimpse()` que mostra um resumo da estrutura dos dados (colunas e seus tipos)
@@ -101,7 +102,7 @@ Começando pela base de vendas, vamos entender os dados que possuímos:
 
 Como podemos observar, o `tibble` gerado foi bem assertivo, acertando os dados numéricos, categóricos e de data. Temos mais de 6000 registros de venda e as características das vendas como hora e dia da compra, categoria do produto, preço, método de pagamento entre outros
 
-Porém, como vamos utilizar esses dados para a construção de visuais, uma boa prática é transfomar dados categóricos que se repetem (categoria e método de pagamento) em **factor**. Faremos essa alteração da seguinte forma:
+Porém, como vamos utilizar esses dados para a construção de visuais, uma boa prática é transformar dados categóricos que se repetem (categoria e método de pagamento) em **factor**. Faremos essa alteração da seguinte forma:
 
 ```{r}
 
@@ -127,14 +128,14 @@ Aqui, vamos fazer apenas aquele mesmo processo do factor. Podemos utilizar o mes
 
 ```
 
-Já exploramos um pouco das duas bases do projeto e ajustamos os dados para facilitar o nosso processo de criação dos gráfico. Vamos começar a colocar a mão na massa e construir o nosso primeiro visual?
+Já exploramos um pouco das duas bases do projeto e ajustamos os dados para facilitar o nosso processo de criação dos gráficos. Vamos começar a colocar a mão na massa e construir o nosso primeiro visual?
 
 ## Construindo nosso primeiro visual
 
 O pacote **ggplot2** trabalha com a criação de visualização de dados em camadas. Ou seja, para construir um gráfico, nós precisamos montá-los aos poucos adicionando os recursos camada por camada. Ao todo, o ggplot2 possui uma série de elementos gramaticais que constituem as camadas e recursos de um visual:
 
 | Elemento    | Descrição                                                       |
-|------------------|------------------------------------------------------|
+|-------------|-----------------------------------------------------------------|
 | data        | Os dados que serão utilizados para a construção do visual       |
 | aesthetics  | A dimensão visual dos dados (coordenadas e elementos estéticos) |
 | geometries  | Os elementos visuais utilizados a partir dos dados              |
@@ -356,7 +357,7 @@ Com a coluna dos meses criada, vamos construir um gráfico adequado para dados t
 
 ```
 
-Opa! Tem algo estrando no nosso gráfico. Isso porque ele está tentando ligar os pontos de todas as vendas em cada mês gerando diferentes linhas verticais que, é bem verdade, não nos informa nada!
+Opa! Tem algo estranho no nosso gráfico. Isso porque ele está tentando ligar os pontos de todas as vendas em cada mês gerando diferentes linhas verticais que, é bem verdade, não nos informa nada!
 
 Precisamos agrupar as vendas mês a mês, somando os valores de cada mês.
 
@@ -364,7 +365,7 @@ Precisamos agrupar as vendas mês a mês, somando os valores de cada mês.
 
 ```
 
-Agora sim! Com os dados dos meses agrupados vamo partir para nosso gráfico de linha. Para que possamos ligar os pontos, levando em conta que a variável x é temporal e/ou categórica, precisamos adicionar o código `group=1` em aes, para que entenda que todos os dados pertencem ao mesmo grupo.
+Agora sim! Com os dados dos meses agrupados vamos partir para nosso gráfico de linha. Para que possamos ligar os pontos, levando em conta que a variável x é temporal e/ou categórica, precisamos adicionar o código `group=1` em aes, para que entenda que todos os dados pertencem ao mesmo grupo.
 
 Outro ponto de atenção também está nos ajustes do eixo y, evitando más interpretações do dado. É importante partir do 0!
 
@@ -380,11 +381,11 @@ O gráfico está bem simples. Que tal a gente modificar um pouco a nossa linha? 
 
 ```
 
-Parece interessante! Mas que tal a gente dar um foco nos pontos desse gráfico. Para isso vamos precisar adicionar um novo `geom` aque. Vamos aprender como fazer?
+Parece interessante! Mas que tal a gente dar um foco nos pontos desse gráfico. Para isso vamos precisar adicionar um novo `geom` aqui. Vamos aprender como fazer?
 
 ## Combinando visuais
 
-Já construímos o gráfico de linha do dsempenho das vendas ao longo de 2023. Agora, faz bastante sentido a gente evidenciar os pontos que combinam os meses e os valores. Isso nos dá uma noção de onde estamos e para onde fomos.
+Já construímos o gráfico de linha do desempenho das vendas ao longo de 2023. Agora, faz bastante sentido a gente evidenciar os pontos que combinam os meses e os valores. Isso nos dá uma noção de onde estamos e para onde fomos.
 
 Para isso, basta a gente adicionar um `geom_point` junto ao nosso visual que construímos.
 
@@ -400,13 +401,13 @@ Legal! Nosso visual está ficando muito bom. Vamos mexer mais nele mais para fre
 
 ## Agrupando e empilhando dados
 
-Aprendemos representar dados categóricos, numéricos e temporais. Mas e a combinação destes? É isso que faremos aqui ao responder mais um questionamento:
+Aprendemos a representar dados categóricos, numéricos e temporais. Mas e a combinação destes? É isso que faremos aqui ao responder mais um questionamento:
 
-### Como esta dividida a venda por trimestre por método de pagamento? O método PIX tem tido boa adesão?
+### Como está dividida a venda por trimestre por método de pagamento? O método PIX tem tido boa adesão?
 
 Como você pode notar, temos 3 variáveis a considerar aqui: o tempo (em trimestre), o valor das vendas e o método de pagamento.
 
-Podemos começar tratando a variável temporal. Como não temos os dados do trimestre, vamos criar uma nova coluna com esse dado, utilizando o pacote `lubridate` para extrair os trimestres pela data da compra e já transformando para factor para facilitar na hora de construir o gráfico.
+Podemos começar tratando a variável temporal. Como não temos os dados do trimestre, vamos criar uma nova coluna com esse dado, utilizando o pacote `lubridate` para extrair os trimestres pela data da compra e já transformado para factor para facilitar na hora de construir o gráfico.
 
 ```{r}
 
@@ -450,7 +451,7 @@ Depois de definir o vetor das cores vamos mudar a função da definição de cor
 
 ```
 
-Deu outra cara para o nosso visual! Temos um gráfico muito bem feito e que ilustra a resposta àquela pergunta com mais propriedade. Por exemplo, tivemos um aumento das vendas por PIX ao longo dos trimestres, embora apenas no 1º Tri eles foram em maioria em relação as compras por Cartão de Crédito.
+Deu outra cara para o nosso visual! Temos um gráfico muito bem feito e que ilustra a resposta àquela pergunta com mais propriedade. Por exemplo, tivemos um aumento das vendas por PIX ao longo dos trimestres, embora apenas no 1º Tri eles foram em maioria em relação às compras por Cartão de Crédito.
 
 # Personalizando os visuais
 
@@ -465,7 +466,7 @@ Primeiro passamos a paleta de cores da Zoop para que possamos alterar os visuais
 ### Paleta de cores da Zoop
 
 | red_1                               | red_2                               | red_3                               | grey_1                               | grey_2                               | grey_3                               | blue_1                               | blue_2                               | blue_3                               |
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|-------------------------------------|-------------------------------------|-------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|
 | #ee8399                             | #e23155                             | #881d33                             | #f3f3f3                              | #ebebeb                              | #8d8d8d                              | #a3adbd                              | #5e708c                              | #19325b                              |
 | ![](imagens/paleta_cores/RED_1.png) | ![](imagens/paleta_cores/RED_2.png) | ![](imagens/paleta_cores/RED_3.png) | ![](imagens/paleta_cores/GREY_1.png) | ![](imagens/paleta_cores/GREY_2.png) | ![](imagens/paleta_cores/GREY_3.png) | ![](imagens/paleta_cores/BLUE_1.png) | ![](imagens/paleta_cores/BLUE_2.png) | ![](imagens/paleta_cores/BLUE_3.png) |
 
@@ -548,7 +549,7 @@ meses <- c("Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
 
 Agora, vamos alterar os valores dos eixos da variável temporal (`mes`) para o nome abreviado e da numérica (`vendas_por_mes`) para um formato resumido do valor (em milhões e milhares).
 
-Para os meses, utilizaremos o `scale_x_discrete()` e para os valores de venda, o `scale_y_continuous()` combinado com a função `number_format()` do pacote **scales** que formata números de uma forma mais amigável e a função `cut_short_scale()` também do **scales** que reduz os números pela sua ordem de grandeza (K = mil , M= milhão, B = bilhão, etc.).
+Para os meses, utilizaremos o `scale_x_discrete()` e para os valores de venda, o `scale_y_continuous()` combinado com a função `label_number()` do pacote **scales** que formata números de uma forma mais amigável e a função `cut_short_scale()` também do **scales** que reduz os números pela sua ordem de grandeza (K = mil , M= milhão, B = bilhão, etc.).
 
 ```{r message=FALSE}
 grafico_vendas_mes <- grafico_vendas_mes +
@@ -648,7 +649,7 @@ Agora, vamos ajustar os valores dos eixos X e Y, para facilitar a leitura dos da
 ```{r}
 grafico_vendas_pag <- grafico_vendas_pag +
   scale_x_discrete(labels = c("1º Tri", "2º Tri", "3º Tri", "4º Tri")) +
-  scale_y_continuous(labels = number_format(prefix = "R$",
+  scale_y_continuous(labels = label_number(prefix = "R$",
                                             scale_cut = cut_short_scale()))
 
 grafico_vendas_pag
@@ -685,7 +686,7 @@ Com a nossa análise exploratória dos dados dos clientes conseguimos realizar a
 
 ### Histórico das vendas
 
-Agora, vamos para um resumo do gistórico de vendas, trazendo a versão final dos nossos gráficos e algumas interpretações:
+Agora, vamos para um resumo do histórico de vendas, trazendo a versão final dos nossos gráficos e algumas interpretações:
 
 #### **Qual foi o desempenho das vendas ao longo dos meses em 2023?**
 
