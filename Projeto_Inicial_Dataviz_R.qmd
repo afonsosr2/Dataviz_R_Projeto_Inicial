@@ -61,8 +61,7 @@ Após esta etapa, vamos criar 2 tabelas com os dados dos clientes e das vendas d
 Para a tabela de vendas vamos ler os primeiros dados, observando as colunas e os registros utilizando a função `head()`.
 
 ```{r}
-vendas <- read_csv(url_vendas, show_col_types = FALSE)
-vendas
+
 ```
 
 Já para a tabela de clientes vamos usar o `glimpse()` que mostra um resumo da estrutura dos dados (colunas e seus tipos)
@@ -135,7 +134,7 @@ Já exploramos um pouco das duas bases do projeto e ajustamos os dados para faci
 O pacote **ggplot2** trabalha com a criação de visualização de dados em camadas. Ou seja, para construir um gráfico, nós precisamos montá-los aos poucos adicionando os recursos camada por camada. Ao todo, o ggplot2 possui uma série de elementos gramaticais que constituem as camadas e recursos de um visual:
 
 | Elemento    | Descrição                                                       |
-|-------------|-----------------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | data        | Os dados que serão utilizados para a construção do visual       |
 | aesthetics  | A dimensão visual dos dados (coordenadas e elementos estéticos) |
 | geometries  | Os elementos visuais utilizados a partir dos dados              |
@@ -466,7 +465,7 @@ Primeiro passamos a paleta de cores da Zoop para que possamos alterar os visuais
 ### Paleta de cores da Zoop
 
 | red_1                               | red_2                               | red_3                               | grey_1                               | grey_2                               | grey_3                               | blue_1                               | blue_2                               | blue_3                               |
-|-------------------------------------|-------------------------------------|-------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | #ee8399                             | #e23155                             | #881d33                             | #f3f3f3                              | #ebebeb                              | #8d8d8d                              | #a3adbd                              | #5e708c                              | #19325b                              |
 | ![](imagens/paleta_cores/RED_1.png) | ![](imagens/paleta_cores/RED_2.png) | ![](imagens/paleta_cores/RED_3.png) | ![](imagens/paleta_cores/GREY_1.png) | ![](imagens/paleta_cores/GREY_2.png) | ![](imagens/paleta_cores/GREY_3.png) | ![](imagens/paleta_cores/BLUE_1.png) | ![](imagens/paleta_cores/BLUE_2.png) | ![](imagens/paleta_cores/BLUE_3.png) |
 
