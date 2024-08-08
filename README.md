@@ -10,7 +10,7 @@ O objetivo deste curso é aprender a construir diferentes tipos de visualizaçã
 
 ## Introdução
 
-![](imagens/logos/logo_branca_fundo_azul.png){alt="inserir alt"}
+![](imagens/logos/logo_branca_fundo_azul.png)
 
 Neste curso, vamos trabalhar com o storytelling da empresa fictícia **Zoop**, uma grande varejista que atende a todas as regiões do Brasil por meio do seu **e-commerce**. Ela é conhecida pela ampla variedade em seus produtos buscando atender a todo tipo de público.
 
